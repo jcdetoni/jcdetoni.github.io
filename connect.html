@@ -1,0 +1,377 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+            }
+            .elemento {
+                width: 50%;
+                margin-bottom: 30px;
+                
+            }
+            .node {
+                margin: 5px;
+            }
+            
+            .conector-direita {
+               position: relative;
+               margin-top: 5px;
+               float: right;
+               right: -35px;
+               width: 10px;
+               height: 10px;
+               background-color: #555;
+               border-radius: 50%;
+            }
+            
+            .label-color {
+               margin: 5px;
+               width: 10px;
+               height: 10px;
+            }
+            .conector-esquerda {
+               position: relative;
+               margin-top: 5px;
+               float: left;
+               left: -15px;
+               width: 10px;
+               height: 10px;
+               background-color: #555;
+               border-radius: 50%;
+            }
+            
+            .line-active {
+                animation: dash  reverse 3s infinite linear;
+            }
+            
+            @keyframes dash {
+              to {
+                stroke-dashoffset: 100;
+              }
+            }
+            
+        </style>
+        <!-- Bootstrap Core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+            
+        <link href="css/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div class="container" id="container">
+            <div id="svg-layer"></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="elemento1" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 1</h4>
+                        <?php for($i = 0; $i < 12; $i++){ ?>
+                        <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div id="elemento2" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 2</h4>
+                         <?php for($i = 0; $i < 12; $i++){ ?>
+                        <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div id="elemento5" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 5</h4>
+                         <?php for($i = 0; $i < 12; $i++){ ?>
+                        <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div id="elemento6" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 6</h4>
+                         <?php for($i = 0; $i < 12; $i++){ ?>
+                        <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="elemento3" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 3</h4>
+                        <?php for($i = 0; $i < 6; $i++){ ?>
+                            <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div id="elemento4" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 4</h4>
+                        <?php for($i = 0; $i < 6; $i++){ ?>
+                            <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    
+                </div>
+                <div class="col-md-3">
+                    <div id="elemento7" class="elemento">
+                        <h4 class="bg-info text-center">Elemento 7</h4>
+                        <?php for($i = 0; $i < 6; $i++){ ?>
+                            <div class="node bg-info text-center" id="node<?php echo $i?>">Node <?php echo $i?></div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <!-- jQuery -->
+        <script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="js/config-window.js"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+            
+        <!-- Bootstrap Core JavaScript -->
+        <script type="text/javascript"  src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            
+            (function($){
+                var cores = {
+                    abnt : {
+                        1 : 'green',
+                        2 : 'yellow', 
+                        3 : 'silver', 
+                        4 : 'blue', 
+                        5 : 'red', 
+                        6 : 'purple', 
+                        7 : 'maroon', 
+                        8 : 'pink', 
+                        9 : 'black', 
+                        10 : 'gray', 
+                        11 : 'orange', 
+                        12 : 'aqua'
+                    },
+                    eia : {
+                        1 : 'blue',
+                        2 : 'orange', 
+                        3 : 'green', 
+                        4 : 'maroon', 
+                        5 : 'gray', 
+                        6 : 'white', 
+                        7 : 'red', 
+                        8 : 'black', 
+                        9 : 'yellow', 
+                        10 : 'purple', 
+                        11 : 'pink', 
+                        12 : 'aqua'
+                    }
+                }; 
+                
+                var configDefault = {
+                    curva : 80,
+                    dashed : true,
+                    classElement : 'elemento',
+                    idContainerDiv : 'container',
+                    padrao : 'abnt'
+                };
+                
+                var svg = null;
+                
+                $.fn.connect = function(target, options) {
+                    var config = $.extend(configDefault , options);
+                    var target = target;
+                    var from = this;
+                    
+                    var container = $("#" + config.idContainerDiv);
+                    if($("#svg") === undefined || $("#svg").length === 0){
+                        svg = d3.select("#svg-layer")
+                          .append("svg:svg")
+                          .attr('id', 'svg')
+                          .attr("width", $(container).width())
+                          .attr("height", $(container).height())
+                          .style("position", "absolute");
+                    }
+                    $(from).find('.conector').click(function(event){
+                        if($(this).attr('data-connect') !== "true"){
+                            $(from).find('.conector[data-connect="false"]').css('background-color', '#555');
+                            $(from).find('.conector').attr('data-use', false);
+                            $(this).css('background-color', '#f00');
+                            $(this).attr('data-use', true);
+                            var to = $(target).find('.conector[data-use="true"]');
+                            if(to.length > 0){
+                                event.stopImmediatePropagation();
+                                ligarElementos( to, $(this));
+                            }
+                        }else if($(this).attr('data-id') !== ''){
+                            var to = $(target).find('.conector[id="' + $(this).attr('data-id') + '"]');
+                            if(to.length > 0){
+                                desconectar($(this));
+                                event.stopImmediatePropagation();
+                            }
+                        }
+                    });
+
+                    $(target).find('.conector').click(function(event){
+                        if($(this).attr('data-connect') !== "true"){
+                            $(target).find('.conector[data-connect="false"]').css('background-color', '#555');
+                            $(target).find('.conector').attr('data-use', false);
+                            $(this).css('background-color', '#f00');
+                            $(this).attr('data-use', true);
+                            var to = $(from).find('.conector[data-use="true"]');
+                            if(to.length > 0){
+                                ligarElementos(to, $(this));
+                                event.stopImmediatePropagation();
+                            } 
+                        }else if($(this).attr('data-id') !== ''){
+                            var to = $(from).find('.conector[id="' + $(this).attr('data-id') + '"]');
+                            if(to.length > 0){
+                                desconectar($(this));
+                                event.stopImmediatePropagation();
+                            } 
+                        }
+                    });    
+                    
+                    ligarElementos = function(elemento1, elemento2){
+                        var idSvgLinha = $(elemento1).attr('id') + '-' + $(elemento2).attr('id');
+                        $(elemento1).attr('data-use', false).attr('data-connect', true).attr('data-id', $(elemento2).attr('id')).attr('data-linha', idSvgLinha).css('background-color', $(elemento1).data('color'));
+                        $(elemento2).attr('data-use', false).attr('data-connect', true).attr('data-id', $(elemento1).attr('id')).attr('data-linha', idSvgLinha).css('background-color', $(elemento1).data('color'));
+                        if($(elemento1).parents().eq(1).offset().left !== $(elemento2).parents().eq(1).offset().left){
+                            if($(elemento1).parents().eq(2).index() < $(elemento2).parents().eq(2).index()){
+                                $(elemento1).removeClass('conector-esquerda');
+                                $(elemento1).addClass('conector-direita');
+                            }else{
+                                $(elemento2).removeClass('conector-esquerda');
+                                $(elemento2).addClass('conector-direita');
+                                $(elemento1).removeClass('conector-direita');
+                                $(elemento1).addClass('conector-esquerda');
+                            }
+                        }
+                        var marginLeft = $(window).width() - ($('#svg').offset().left + $('#svg').width());
+                        var x1 = $(elemento1).offset().left - marginLeft + 5;
+                        var y1 = $(elemento1).offset().top + 5;
+                        var x2= $(elemento2).offset().left - marginLeft + 5;
+                        var y2 = $(elemento2).offset().top + 5;
+                        if($(elemento1).attr('class') === $(elemento2).attr('class')){
+                            ligacaoCurva(elemento1,x1,x2,y1,y2, idSvgLinha);
+                        }else{
+                            ligacaoNormal(elemento1, x1,x2,y1,y2, idSvgLinha);
+                        }
+                    };
+                    
+                    ligacaoNormal = function(element, x1,x2,y1,y2,idSvgLinha){
+                        var line = svg.append("line")
+                            .attr("x1", x1)
+                            .attr("x2", x2)
+                            .attr("y1", y1)
+                            .attr("y2", y2)
+                            .attr("id", idSvgLinha)
+                            .attr("stroke-width", 2)
+                            .attr('class', 'line-active line')
+                            .attr("stroke", $(element).data('color'))
+                            .attr("stroke-dasharray", (config.dashed === true) ? "5,5" : "0,0");
+                    };
+                    
+                    ligacaoCurva = function (element, x1,x2,y1,y2,idSvgLinha){
+                        var curva = config.curva;
+                        if($(element).hasClass('conector-esquerda')){
+                            curva = curva * -1;
+                        }
+                        var path = svg.append("path")
+                        .attr("d", "M" + x1 + "," + y1 + " C" + (x1 + curva) + "," + y1 + " " + (x2 + curva) + "," + y2 + " " + x2 + "," + y2 )
+                        .attr("stroke-width", 2)
+                        .attr("id", idSvgLinha)
+                        .attr('class', 'line-active line')
+                        .attr("stroke", $(element).data('color'))
+                        .attr("fill", "transparent")
+                        .attr("stroke-dasharray", (config.dashed === true) ? "5,5" : "0,0");
+                    };
+                    
+                    desconectar = function(element){
+                        var idLinha = $(element).attr('data-linha');
+                        var idConectado = $(element).attr('data-id');
+                      
+                        if( idLinha !== '' && idConectado !== ''){
+                            $('#' + idLinha).remove();
+                            $('#' + idConectado).attr('data-id', '').attr('data-use', false).attr('data-connect', false).attr('data-linha', '').css('background-color', 'gray');
+                            $(element).attr('data-id', '').attr('data-use', false).attr('data-connect', false).attr('data-linha', '').css('background-color', 'gray');
+                        }
+                    };
+                };
+                
+                $.fn.upConnectors = function(options){
+                    
+                    var config = $.extend(configDefault , options);
+                    
+                    var elemento = $(this);
+                    $(this).find('.node').each(function(index){
+                        var classSpan = 'conector-esquerda';
+                        if($(elemento).parent().index() === 0){
+                            classSpan = 'conector-direita';
+                        }
+                        var colorLabel = $('<span />')
+                                .attr('id', $(elemento).attr('id') + '-' + $(this).attr('id') + '-label')
+                                .attr('class',  ' label-color pull-right')
+                                .css('background-color', cores[config.padrao][index + 1]); 
+                        $(this).append(colorLabel);
+                        
+                        var conector = $('<span />')
+                                .attr('id', $(elemento).attr('id') + '-' + $(this).attr('id') + '-c')
+                                .attr('class', 'conector ' + classSpan )
+                                .attr('data-connect', 'false')
+                                .attr('data-id', "")
+                                .attr('data-linha', "")
+                                .attr('data-color', cores[config.padrao][index + 1])
+                                .attr('data-use', ""); 
+                        $(this).append(conector);
+                        
+                        $( conector ).contextmenu(function(){
+                            var idLinha = $(this).attr('data-linha');
+                            if(idLinha !== ''){
+                                if($('#' + idLinha).hasClass('line-active')){
+                                    $('#' + idLinha).removeClass('line-active');
+                                    $('#' + idLinha).attr('stroke-dasharray', '0,0');
+                                }else{
+                                    $('#' + idLinha).addClass('line-active');
+                                    $('#' + idLinha).attr('stroke-dasharray', '5,5');
+                                }
+                            }
+                            
+                            return false;
+                        });
+                        $(this).attr('id', $(elemento).attr('id') + $(this).attr('id') + '-n');
+                    });
+                };
+                
+                
+            })(jQuery);
+            
+            $('#elemento1').upConnectors();
+            $('#elemento2').upConnectors();
+            $('#elemento3').upConnectors();
+            $('#elemento4').upConnectors();
+            $('#elemento5').upConnectors();
+            $('#elemento6').upConnectors();
+            $('#elemento7').upConnectors();
+            
+            $('#elemento4').connect('#elemento5');
+            $('#elemento1').connect('#elemento2');
+            $('#elemento1').connect('#elemento4');
+            $('#elemento2').connect('#elemento3');
+            $('#elemento4').connect('#elemento3');
+            $('#elemento1').connect('#elemento3');
+            $('#elemento2').connect('#elemento4');
+            $('#elemento2').connect('#elemento5');
+            $('#elemento5').connect('#elemento6');
+            $('#elemento4').connect('#elemento7');
+            $('#elemento6').connect('#elemento7');
+            
+            
+        </script>
+    </body>
+</html>
+
